@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎬 Auto-Poster Social
 
-## Getting Started
+Автоматическая публикация Reels и Shorts в Instagram, TikTok и YouTube.
 
-First, run the development server:
+## 🚀 Quick Start
 
 ```bash
-npm run dev
-# or
+# Install dependencies
+yarn install
+
+# Start development server
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+yarn build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | Next.js 16, React 19, TypeScript |
+| **UI** | Tailwind CSS, shadcn/ui |
+| **Database** | PostgreSQL + Prisma |
+| **Storage** | MinIO (S3-compatible) |
+| **Queue** | Redis + BullMQ |
+| **Auth** | NextAuth.js |
 
-## Learn More
+## 📋 MVP Development Plan
 
-To learn more about Next.js, take a look at the following resources:
+### Phase 1: Foundation
+- [x] **Step 1**: Project Scaffolding — Next.js + TypeScript + Tailwind
+- [x] **Step 2**: shadcn/ui Setup — UI components library
+- [ ] **Step 3**: Docker Infrastructure — PostgreSQL + MinIO + Redis
+- [ ] **Step 4**: Database + Prisma — Schema and migrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Phase 2: Core Features
+- [ ] **Step 5**: Auth (NextAuth.js) — Google OAuth login
+- [ ] **Step 6**: Basic Dashboard Layout — Sidebar navigation
+- [ ] **Step 7**: MinIO Integration — File upload service
+- [ ] **Step 8**: Video Upload UI — Drag & drop, preview
+- [ ] **Step 9**: Post CRUD — Create, read, delete posts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Phase 3: Platform Integration
+- [ ] **Step 10**: TikTok OAuth — Connect TikTok account
+- [ ] **Step 11**: TikTok Upload — Publish videos to TikTok
+- [ ] **Step 11.5**: Instagram OAuth — Connect Instagram Business account
+- [ ] **Step 11.6**: Instagram Reels Upload — Publish Reels
 
-## Deploy on Vercel
+### Phase 4: Automation
+- [ ] **Step 12**: Job Queue (BullMQ) — Background task processing
+- [ ] **Step 13**: Scheduling — Schedule posts for future
+- [ ] **Step 14**: Multi-Platform UI — Select multiple platforms
+- [ ] **Step 15**: Error Handling & Polish — Toast notifications, retries
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+auto-poster-social/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/            # Auth pages (login)
+│   │   ├── (dashboard)/       # Protected dashboard pages
+│   │   └── api/               # API routes
+│   ├── components/
+│   │   └── ui/                # shadcn/ui components
+│   ├── lib/
+│   │   ├── db/                # Prisma client
+│   │   ├── platforms/         # TikTok, Instagram, YouTube adapters
+│   │   ├── storage/           # MinIO/S3 client
+│   │   └── queue/             # BullMQ job handlers
+│   └── types/                 # TypeScript types
+├── prisma/                    # Database schema
+├── docker-compose.yml         # Dev infrastructure
+└── .env.local                 # Environment variables
+```
+
+## 🐳 Docker Services (Step 3)
+
+```bash
+# Start all services
+docker compose up -d
+
+# Services:
+# - PostgreSQL: localhost:5432
+# - MinIO: localhost:9000 (API), localhost:9001 (Console)
+# - Redis: localhost:6379
+```
+
+## 🔑 Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in:
+
+```env
+# Database
+DATABASE_URL="postgresql://..."
+
+# MinIO
+MINIO_ENDPOINT="http://localhost:9000"
+MINIO_ACCESS_KEY="minioadmin"
+MINIO_SECRET_KEY="minioadmin"
+
+# Auth
+NEXTAUTH_SECRET="your-secret"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# Platforms
+TIKTOK_CLIENT_KEY=""
+TIKTOK_CLIENT_SECRET=""
+FACEBOOK_APP_ID=""
+FACEBOOK_APP_SECRET=""
+```
+
+## 📝 Future Features (v2+)
+
+- [ ] 💬 Auto-Responder (ManyChat-style)
+- [ ] 📝 Threads Generator
+- [ ] 🤖 AI Content Generator
+- [ ] 📊 Analytics Dashboard
+
+## 📄 License
+
+Private project.
