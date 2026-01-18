@@ -33,11 +33,11 @@ Open [http://localhost:3000](http://localhost:3000) to see the app.
 ### Phase 1: Foundation
 - [x] **Step 1**: Project Scaffolding — Next.js + TypeScript + Tailwind
 - [x] **Step 2**: shadcn/ui Setup — UI components library
-- [ ] **Step 3**: Docker Infrastructure — PostgreSQL + MinIO + Redis
-- [ ] **Step 4**: Database + Prisma — Schema and migrations
+- [x] **Step 3**: Docker Infrastructure — PostgreSQL + MinIO + Redis
+- [x] **Step 4**: Database + Prisma — Schema and migrations
 
 ### Phase 2: Core Features
-- [ ] **Step 5**: Auth (NextAuth.js) — Google OAuth login
+- [x] **Step 5**: Auth (NextAuth.js) — Google OAuth login
 - [ ] **Step 6**: Basic Dashboard Layout — Sidebar navigation
 - [ ] **Step 7**: MinIO Integration — File upload service
 - [ ] **Step 8**: Video Upload UI — Drag & drop, preview

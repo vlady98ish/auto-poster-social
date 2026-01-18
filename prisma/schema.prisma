@@ -1,0 +1,163 @@
+// Auto-Poster Social - Database Schema
+// https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USER & AUTH =====
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts       Account[]
+  sessions       Session[]
+  socialAccounts SocialAccount[]
+  posts          Post[]
+
+  @@map("users")
+}
+
+// NextAuth.js required models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ===== SOCIAL PLATFORM CONNECTIONS =====
+
+model SocialAccount {
+  id              String    @id @default(cuid())
+  userId          String
+  platform        Platform
+  platformUserId  String
+  platformUsername String?
+  accessToken     String    @db.Text
+  refreshToken    String?   @db.Text
+  expiresAt       DateTime?
+  metadata        Json?     // Platform-specific data
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform, platformUserId])
+  @@map("social_accounts")
+}
+
+enum Platform {
+  INSTAGRAM
+  TIKTOK
+  YOUTUBE
+}
+
+// ===== POSTS & CONTENT =====
+
+model Post {
+  id            String      @id @default(cuid())
+  userId        String
+
+  // Video content
+  videoKey      String      // MinIO object key
+  videoFilename String?     // Original filename
+  thumbnailKey  String?     // Thumbnail image key
+
+  // Post content
+  caption       String?     @db.Text
+
+  // Publishing
+  platforms     Platform[]
+  scheduledFor  DateTime?
+  status        PostStatus  @default(DRAFT)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobs Job[]
+
+  @@map("posts")
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHING
+  PUBLISHED
+  PARTIAL    // Some platforms succeeded, some failed
+  FAILED
+}
+
+// ===== JOB QUEUE =====
+
+model Job {
+  id           String    @id @default(cuid())
+  postId       String
+  platform     Platform
+  status       JobStatus @default(PENDING)
+  errorMessage String?   @db.Text
+  completedAt  DateTime?
+  retries      Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, platform])
+  @@index([status])
+  @@map("jobs")
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
